@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vedic Math Biologic | B.O.H.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;800&display=swap');
+
+        :root {
+            --bg-color: #050608;
+            --card-bg: #0a0c10;
+            --border-color: #1e2329;
+            --neon-green: #00ff9d;
+            --text-slate: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #cbd5e1;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains+Mono', monospace;
+        }
+
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.2);
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .animate-pulse-fast {
+            animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .5;
+            }
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            #sidebar {
+                display: none !important;
+            }
+
+            main {
+                margin-left: 0 !important;
+                width: 100% !important;
+                background: white !important;
+                color: black !important;
+            }
+
+            .bg-card {
+                background: white !important;
+                border: 1px solid #ccc !important;
+                color: black !important;
+            }
+
+            .text-neon {
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="selection:bg-[#00ff9d30]">
+
+    <div id="app"></div>
+
+    <script>
+        // --- DATA ---
+        const creatorBio = "The architect of this platform is a mental math grandmaster who transformed arithmetic from a source of dread into a fluid game of logic. By focusing on 'pattern-cutting' rather than calculation, they have empowered thousands of students to solve complex problems in seconds. The philosophy is simple: the mind is a blade, and these tricks are the whetstone. Every 'Marathon' on this site is designed to sharpen your cognitive reflexes until numbers feel like a second language, ensuring that the Biologic potential of your brain is fully unlocked.";
+
+        const sutraLibrary = [
+            { id: 's1', sutra: "Ekadhikena Purvena", meaning: "By one more than the previous one", logic: "Squaring numbers ending in 5. Multiply first digits by (itself+1) and append 25.", example: "45²: 4×5=20 → 2025", questions: [{ q: "Solve: 85 × 85", options: ["7225", "6425", "7525", "8125"], a: "7225" }, { q: "Story: A farmer has a square plot of land with a side of 35 meters. What is the total area in sq meters?", options: ["1225", "1525", "925", "1125"], a: "1225" }] },
+            { id: 's2', sutra: "Nikhilam Navatashcaramam Dashatah", meaning: "All from 9 and the last from 10", logic: "Fast subtraction from powers of 10. Subtract every digit from 9 and the last from 10.", example: "1000 - 467: 9-4=5, 9-6=3, 10-7=3 → 533", questions: [{ q: "Solve: 1000 - 781", options: ["219", "319", "229", "209"], a: "219" }, { q: "Story: A probe travels 10,000km. It has covered 8,245km. How much distance is remaining?", options: ["1755", "1855", "1765", "1655"], a: "1755" }] },
+            { id: 's3', sutra: "Urdhva-Tiryagbhyam", meaning: "Vertically and Crosswise", logic: "Universal multiplication. Multiply vertically, cross-multiply, and sum results.", example: "12×13: (1×1=1), (1×3+2×1=5), (2×3=6) → 156", questions: [{ q: "Solve: 21 × 13", options: ["273", "263", "283", "253"], a: "273" }, { q: "Story: A shelf has 14 rows with 12 books each. What is the total book count?", options: ["168", "158", "178", "148"], a: "168" }] },
+            { id: 's4', sutra: "Paravartya Yojayet", meaning: "Transpose and Adjust", logic: "Division by numbers near powers of 10. Change signs and adjust.", example: "144 ÷ 12 → 12.", questions: [{ q: "Solve: 144 ÷ 12", options: ["12", "11", "13", "14"], a: "12" }, { q: "Story: 156 items split into 12 boxes equally. Items per box?", options: ["13", "12", "14", "15"], a: "13" }] },
+            { id: 's5', sutra: "Sunyam Samyasamuccaye", meaning: "When the sum is the same, that sum is zero", logic: "Equating coefficients or terms to zero in linear equations.", example: "12x = 36 → x = 3.", questions: [{ q: "Solve: 15x = 75", options: ["5", "3", "4", "6"], a: "5" }, { q: "Story: A balance requires x units where 14x = 28. Solve for x.", options: ["2", "3", "4", "5"], a: "2" }] },
+            { id: 's6', sutra: "Anurupyena", meaning: "Proportionality", logic: "Mental math for bases like 50 using fractions of 100.", example: "49 x 49 (Base 50).", questions: [{ q: "Solve: 49 × 49", options: ["2401", "2501", "2301", "2411"], a: "2401" }, { q: "Story: 52 teams have 48 players each. Total count?", options: ["2496", "2396", "2596", "2486"], a: "2496" }] },
+            { id: 's7', sutra: "Sankalana-vyavakalanabhyam", meaning: "By addition and subtraction", logic: "Simplifying simultaneous equations by adding and subtracting.", example: "x+y=10, x-y=4 → x=7.", questions: [{ q: "If x+y=20 and x-y=10, find x.", options: ["15", "10", "5", "12"], a: "15" }, { q: "Story: Two weights sum to 50kg, difference is 10kg. Larger weight?", options: ["30kg", "25kg", "35kg", "40kg"], a: "30kg" }] },
+            { id: 's8', sutra: "Puranapuranabhyam", meaning: "By completion or non-completion", logic: "Rounding to simplify, then adjusting result.", example: "198 + 302 = 500.", questions: [{ q: "Solve: 299 + 401", options: ["700", "699", "701", "600"], a: "700" }, { q: "Story: Two batteries hold 49% and 51%. Total charge?", options: ["100%", "90%", "110%", "101%"], a: "100%" }] },
+            { id: 's9', sutra: "Calana-Kalanabhyam", meaning: "Differences and Similarities", logic: "Finding roots of quadratic equations through mental logic.", example: "x²-5x+6=0 roots are 2, 3.", questions: [{ q: "Roots of x²-7x+12=0?", options: ["3, 4", "2, 6", "1, 12", "5, 2"], a: "3, 4" }, { q: "Story: A path follows x²-9=0. Landing point x?", options: ["3", "2", "9", "4"], a: "3" }] },
+            { id: 's10', sutra: "Yavadunam", meaning: "Whatever the extent of its deficiency", logic: "Squaring near a base. Subtract deficiency, append square.", example: "98² = 9604.", questions: [{ q: "Solve: 97 × 97", options: ["9409", "9509", "9309", "9609"], a: "9409" }, { q: "Story: A room is 96m by 96m. Area?", options: ["9216", "9316", "9116", "9416"], a: "9216" }] },
+            { id: 's11', sutra: "Vyastisamastih", meaning: "Part and Whole", logic: "Breaking large problems into biologic parts.", example: "168/6 = 20 + 8.", questions: [{ q: "Solve: 135 ÷ 5", options: ["27", "25", "23", "29"], a: "27" }, { q: "Story: 144 apples shared among 12 people. Each?", options: ["12", "11", "10", "13"], a: "12" }] },
+            { id: 's12', sutra: "Sesanyankena Caramena", meaning: "The remainders by the last digit", logic: "Rapid decimal conversion for specific fractions.", example: "1/4 = 0.25.", questions: [{ q: "Decimal of 1/4?", options: ["0.25", "0.5", "0.2", "0.75"], a: "0.25" }, { q: "Story: A tank is 3/4 full. Decimal?", options: ["0.75", "0.25", "0.5", "0.6"], a: "0.75" }] },
+            { id: 's13', sutra: "Sopantyadvayamantyam", meaning: "The ultimate and twice the penultimate", logic: "Algebraic balancing for linear equations.", example: "2x + 10 = 20 → 5.", questions: [{ q: "Solve: 3x + 15 = 45", options: ["10", "15", "5", "20"], a: "10" }, { q: "Story: Salary split in 2:1 ratio. Total $150. Higher?", options: ["$100", "$50", "$75", "$60"], a: "$100" }] },
+            { id: 's14', sutra: "Ekanyunena Purvena", meaning: "By one less than the previous one", logic: "Multiplication by 99, 999. Subtract 1, find complement.", example: "45x99 = 4455.", questions: [{ q: "Solve: 63 × 99", options: ["6237", "6337", "6247", "6137"], a: "6237" }, { q: "Story: 99 kits cost $40 each. Total?", options: ["$3960", "$4000", "$3860", "$3900"], a: "$3960" }] },
+            { id: 's15', sutra: "Gunitasamuccayah", meaning: "The product of the sum of the coefficients", logic: "Verifying polynomial products.", example: "(x+1)(x+2) coeff sum is 6.", questions: [{ q: "Coeff sum of (x+2)(x+3)?", options: ["12", "6", "10", "8"], a: "12" }, { q: "Story: Growth factors 3 and 4. Product?", options: ["12", "7", "10", "14"], a: "12" }] },
+            { id: 's16', sutra: "Gunakasamuccayah", meaning: "All the multipliers", logic: "Advanced factorization and HCF.", example: "HCF of 24, 36 is 12.", questions: [{ q: "HCF of 15 and 25?", options: ["5", "10", "3", "1"], a: "5" }, { q: "Story: Two wires 24m and 40m. Longest match scale?", options: ["8m", "4m", "12m", "6m"], a: "8m" }] }
+        ];
+
+        // --- STATE MANAGEMENT ---
+        let state = {
+            view: 'login',
+            isLoggedIn: false,
+            activeSutra: null,
+            quizState: null,
+            sidebarOpen: false
+        };
+
+        const timer = {
+            id: null,
+            start: function () {
+                this.stop();
+                this.id = setInterval(() => {
+                    if (state.quizState && state.quizState.timeLeft > 0 && !state.quizState.feedback) {
+                        state.quizState.timeLeft--;
+                        render();
+                    } else if (state.quizState && state.quizState.timeLeft === 0 && !state.quizState.feedback) {
+                        submitAnswer(null);
+                    }
+                }, 1000);
+            },
+            stop: function () {
+                if (this.id) clearInterval(this.id);
+            }
+        };
+
+        // --- CORE LOGIC ---
+        function setView(viewName) {
+            state.view = viewName;
+            state.sidebarOpen = false;
+            render();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const val = document.getElementById('pass-input').value;
+            if (val === "3") {
+                state.isLoggedIn = true;
+                setView('dashboard');
+            } else {
+                alert("Neural Auth Error.");
+            }
+        }
+
+        function startQuiz(mode, sutra = null) {
+            let questions = [];
+            if (mode === 'marathon') {
+                questions = sutraLibrary.flatMap(s => s.questions).sort(() => Math.random() - 0.5).slice(0, 10);
+            } else {
+                questions = sutra.questions;
+            }
+
+            state.quizState = {
+                questions,
+                index: 0,
+                score: 0,
+                feedback: null,
+                timeLeft: 15,
+                mode,
+                sutra
+            };
+            setView('quiz');
+            timer.start();
+        }
+
+        function submitAnswer(opt) {
+            if (state.quizState.feedback) return;
+            const correct = opt === state.quizState.questions[state.quizState.index].a;
+            if (correct) state.quizState.score++;
+            state.quizState.feedback = correct ? 'correct' : 'wrong';
+            render();
+        }
+
+        function nextQuestion() {
+            if (state.quizState.index < state.quizState.questions.length - 1) {
+                state.quizState.index++;
+                state.quizState.feedback = null;
+                state.quizState.timeLeft = 15;
+                render();
+            } else {
+                timer.stop();
+                setView('results');
+            }
+        }
+
+        function toggleSidebar() {
+            state.sidebarOpen = !state.sidebarOpen;
+            render();
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function render() {
+            const container = document.getElementById('app');
+
+            if (state.view === 'login') {
+                container.innerHTML = `
+                    <div class="min-h-screen flex items-center justify-center p-6 bg-[#050608]">
+                        <div class="max-w-md w-full bg-[#0a0c10] border border-[#1e2329] p-10 rounded-2xl shadow-2xl text-center relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-[#00ff9d]"></div>
+                            <div class="w-20 h-20 bg-[#00ff9d10] rounded-full flex items-center justify-center mx-auto mb-8 text-[#00ff9d] border border-[#00ff9d20]">
+                                <i data-lucide="shield" class="w-8 h-8"></i>
+                            </div>
+                            <h1 class="text-2xl font-black text-white italic tracking-tighter mb-2 uppercase">Biologic Auth</h1>
+                            <p class="text-slate-500 text-xs font-bold uppercase tracking-[0.4em] mb-10 italic">Input Key: 3</p>
+                            <form onsubmit="handleLogin(event)" class="space-y-6">
+                                <input id="pass-input" type="password" placeholder="0" class="w-full bg-[#050608] border border-[#1e2329] p-4 rounded-xl outline-none focus:border-[#00ff9d] text-center text-2xl font-mono text-white tracking-[0.5em]" />
+                                <button type="submit" class="w-full bg-[#00ff9d] hover:bg-[#00e68e] text-black py-4 rounded-xl font-black uppercase tracking-widest transition-all shadow-lg active:scale-95">Synchronize</button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="flex min-h-screen">
+                        ${renderSidebar()}
+                        <main class="flex-1 lg:ml-72 p-6 md:p-12 transition-all">
+                            <button onclick="toggleSidebar()" class="lg:hidden fixed top-4 right-4 z-40 bg-[#1e2329] p-2 rounded-lg text-[#00ff9d] shadow-lg">
+                                <i data-lucide="menu"></i>
+                            </button>
+                            <div class="max-w-4xl mx-auto">
+                                ${renderView()}
+                            </div>
+                        </main>
+                    </div>
+                `;
+            }
+            lucide.createIcons();
+        }
+
+        function renderSidebar() {
+            return `
+                <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-[#0a0c10] border-r border-[#1e2329] transition-transform lg:translate-x-0 ${state.sidebarOpen ? 'translate-x-0' : '-translate-x-full'}">
+                    <div class="flex flex-col h-full p-6">
+                        <div class="flex items-center gap-3 mb-10 text-[#00ff9d] font-black tracking-tighter text-xl">
+                            <i data-lucide="activity" class="animate-pulse"></i> VEDIC B.O.H.
+                        </div>
+                        <nav class="flex-1 space-y-1 overflow-y-auto scrollbar-hide pr-2">
+                            <button onclick="setView('dashboard')" class="w-full text-left p-3 rounded-lg flex items-center gap-3 text-sm font-bold ${state.view === 'dashboard' ? 'bg-[#00ff9d10] text-[#00ff9d]' : 'text-slate-500'}">
+                                <i data-lucide="database" class="w-4 h-4"></i> DATA HUB
+                            </button>
+                            <button onclick="setView('about')" class="w-full text-left p-3 rounded-lg flex items-center gap-3 text-sm font-bold ${state.view === 'about' ? 'bg-[#00ff9d10] text-[#00ff9d]' : 'text-slate-500'}">
+                                <i data-lucide="user" class="w-4 h-4"></i> ARCHITECT
+                            </button>
+                            <div class="pt-6 pb-2 px-3 text-[10px] font-black uppercase text-slate-600 tracking-[0.2em]">Neural Sutras</div>
+                            <div class="space-y-1">
+                                ${sutraLibrary.map(s => `
+                                    <button onclick="handleSutraClick('${s.id}')" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-md ${state.activeSutra && state.activeSutra.id === s.id && state.view === 'sutraDetail' ? 'text-[#00ff9d]' : 'text-slate-500'} hover:text-slate-300">
+                                        ${s.sutra}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </nav>
+                        <button onclick="startQuiz('marathon')" class="mt-6 p-4 bg-[#00ff9d] hover:bg-[#00e68e] text-black rounded-xl font-black italic flex items-center justify-center gap-2 shadow-lg">
+                            <i data-lucide="flame" class="w-4 h-4"></i> START MARATHON
+                        </button>
+                    </div>
+                </aside>
+            `;
+        }
+
+        function handleSutraClick(id) {
+            state.activeSutra = sutraLibrary.find(s => s.id === id);
+            setView('sutraDetail');
+        }
+
+        function renderView() {
+            switch (state.view) {
+                case 'dashboard':
+                    return `
+                        <div class="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                            <header class="space-y-4">
+                                <h1 class="text-6xl font-black italic tracking-tighter text-white uppercase leading-tight underline decoration-[#00ff9d50]">The Matrix.</h1>
+                                <p class="text-slate-500 text-lg font-medium max-w-xl">Patterns are the architecture of reality. Access any Sutra node to begin cognitive pattern recognition.</p>
+                            </header>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                ${sutraLibrary.slice(0, 6).map(s => `
+                                    <div onclick="handleSutraClick('${s.id}')" class="p-8 bg-[#0a0c10] border border-[#1e2329] rounded-2xl relative group overflow-hidden cursor-pointer hover:border-[#00ff9d50] transition-all">
+                                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"><i data-lucide="hexagon" class="w-20 h-20"></i></div>
+                                        <h3 class="text-[10px] font-black text-[#00ff9d] uppercase tracking-[0.4em] mb-4">Core Sutra</h3>
+                                        <h4 class="text-2xl font-black text-white italic uppercase tracking-tight">${s.sutra}</h4>
+                                        <p class="text-slate-500 text-xs font-bold italic">${s.meaning}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                case 'about':
+                    return `
+                        <div class="max-w-2xl mx-auto py-12 animate-in fade-in">
+                            <h2 class="text-5xl font-black italic border-b-8 border-[#00ff9d] inline-block mb-10 text-white uppercase">The Architect</h2>
+                            <p class="text-2xl font-medium leading-relaxed italic text-slate-400 bg-[#0a0c10] p-12 rounded-[3.5rem] border border-[#1e2329] shadow-inner relative text-center">
+                                "${creatorBio}"
+                            </p>
+                        </div>
+                    `;
+                case 'sutraDetail':
+                    const s = state.activeSutra;
+                    return `
+                        <div class="space-y-10 animate-in fade-in">
+                            <button onclick="setView('dashboard')" class="flex items-center gap-2 text-xs font-black text-[#00ff9d] uppercase tracking-widest"><i data-lucide="arrow-left" class="w-4 h-4"></i> Hub</button>
+                            <section class="bg-[#0a0c10] border border-[#1e2329] p-8 md:p-12 rounded-3xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 p-8 text-[#00ff9d05] font-black text-9xl italic uppercase">${s.id}</div>
+                                <h2 class="text-5xl font-black italic text-white uppercase tracking-tighter leading-tight">${s.sutra}</h2>
+                                <p class="text-slate-500 font-bold italic text-sm mb-8">${s.meaning}</p>
+                                <p class="text-2xl font-bold leading-tight text-slate-300 italic border-l-2 border-[#1e2329] pl-6 mb-8">${s.logic}</p>
+                                <div class="bg-[#050608] border border-[#1e2329] p-6 rounded-2xl"><p class="text-3xl font-mono font-black italic text-[#00ff9d] tracking-widest">${s.example}</p></div>
+                            </section>
+                            <div class="flex gap-4">
+                                <button onclick="startQuiz('practice', state.activeSutra)" class="flex-1 py-6 bg-[#00ff9d] text-black rounded-2xl font-black text-xl italic uppercase shadow-lg active:scale-95 transition-transform">Initiate Neural Sync</button>
+                                <button onclick="window.print()" class="p-6 bg-[#1e2329] border border-[#2d333b] rounded-2xl text-white"><i data-lucide="printer"></i></button>
+                            </div>
+                        </div>
+                    `;
+                case 'quiz':
+                    const q = state.quizState.questions[state.quizState.index];
+                    return `
+                        <div class="max-w-2xl mx-auto space-y-10 animate-in zoom-in-95">
+                            <div class="flex justify-between items-center bg-[#0a0c10] border border-[#1e2329] p-4 rounded-2xl">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white ${state.quizState.timeLeft <= 5 ? 'bg-red-600 animate-pulse' : 'bg-[#00ff9d] text-black'}">
+                                        <i data-lucide="clock" class="w-5 h-5"></i>
+                                    </div>
+                                    <span class="text-2xl font-black font-mono ${state.quizState.timeLeft <= 5 ? 'text-red-500' : 'text-white'}">${state.quizState.timeLeft}s</span>
+                                </div>
+                                <p class="text-xl font-black text-[#00ff9d] font-mono tracking-tighter">${state.quizState.index + 1} / ${state.quizState.questions.length}</p>
+                            </div>
+                            <div class="p-16 bg-[#0a0c10] border-4 border-[#1e2329] rounded-[3rem] text-center ${q.q.includes('Story:') ? 'text-left' : ''}">
+                                <h2 class="${q.q.includes('Story:') ? 'text-xl font-bold' : 'text-6xl font-black'} text-white italic">${q.q}</h2>
+                            </div>
+                            ${!state.quizState.feedback ? `
+                                <div class="grid grid-cols-2 gap-4">
+                                    ${q.options.map(opt => `<button onclick="submitAnswer('${opt}')" class="p-8 bg-[#0a0c10] border border-[#1e2329] hover:border-[#00ff9d] rounded-3xl font-black text-2xl text-white transition-all active:scale-95">${opt}</button>`).join('')}
+                                </div>
+                            ` : `
+                                <div class="p-10 rounded-[2.5rem] border-2 flex items-center justify-between ${state.quizState.feedback === 'correct' ? 'bg-[#00ff9d05] border-[#00ff9d50] text-[#00ff9d]' : 'bg-red-900/10 border-red-500/50 text-red-500'}">
+                                    <h4 class="text-4xl font-black italic uppercase">${state.quizState.feedback === 'correct' ? 'Neural Sync' : 'Logic Flaw'}</h4>
+                                    <button onclick="nextQuestion()" class="px-8 py-5 bg-white text-black rounded-xl font-black text-xl uppercase italic">Forward</button>
+                                </div>
+                            `}
+                        </div>
+                    `;
+                case 'results':
+                    return `
+                        <div class="max-w-md mx-auto text-center space-y-8 py-12 animate-in zoom-in-90">
+                            <div class="p-10 bg-[#0a0c10] border-4 border-[#00ff9d] rounded-full text-[#00ff9d] shadow-xl inline-block"><i data-lucide="trophy" class="w-16 h-16"></i></div>
+                            <h2 class="text-5xl font-black italic uppercase text-white">Simulation Over</h2>
+                            <div class="p-10 bg-[#0a0c10] border border-[#1e2329] rounded-[3rem]">
+                                <p class="text-8xl font-black text-[#00ff9d] font-mono italic">${Math.round((state.quizState.score / state.quizState.questions.length) * 100)}%</p>
+                                <p class="mt-4 text-slate-500 font-bold uppercase tracking-widest">${state.quizState.score} of ${state.quizState.questions.length} Mastered</p>
+                            </div>
+                            <div class="flex gap-4">
+                                <button onclick="setView('dashboard')" class="flex-1 py-5 bg-white text-black rounded-2xl font-black uppercase tracking-widest active:scale-95">Hub</button>
+                                <button onclick="startQuiz(state.quizState.mode, state.quizState.sutra)" class="flex-1 py-5 bg-[#1e2329] text-white rounded-2xl font-black uppercase tracking-widest active:scale-95">Retry</button>
+                            </div>
+                        </div>
+                    `;
+            }
+        }
+
+        // Initialize App
+        window.onload = () => {
+            render();
+        };
+    </script>
+</body>
+
+</html>
